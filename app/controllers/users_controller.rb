@@ -20,7 +20,8 @@ class UsersController < ApplicationController
     if params[:first_user]
       if User.count > 0  # Critical line! Never set @first_user unless we've verified that this is really the first user.
         flash[:info] = 'An admin user has already been created.'
-        redirect_to :action => new
+        redirect_to :action => :new
+        return
       end
       @first_user = true
     end

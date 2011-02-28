@@ -127,6 +127,13 @@ class UsersControllerTest < ActionController::TestCase
     assert !current_user.admin?
   end
   
+  def test_should_not_make_admin_based_on_param_alone
+    assert_no_difference 'User.count' do
+      create_user({}, { :first_user => '1' })
+      assert !logged_in?
+    end
+  end
+  
   def test_sign_up_with_twitter
     assert_difference 'User.count' do
       create_user(
