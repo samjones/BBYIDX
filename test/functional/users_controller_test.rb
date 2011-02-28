@@ -109,6 +109,24 @@ class UsersControllerTest < ActionController::TestCase
     assert_not_nil assigns(:user).activation_code
   end
   
+  def test_should_make_first_user_admin
+    User.destroy_all
+    Role.destroy_all
+
+    create_user({}, { :first_user => '1' })
+    assert logged_in?
+    assert current_user.admin?
+  end
+  
+  def test_should_not_make_first_user_admin_without_first_user_param
+    User.destroy_all
+    Role.destroy_all
+
+    create_user
+    assert logged_in?
+    assert !current_user.admin?
+  end
+  
   def test_sign_up_with_twitter
     assert_difference 'User.count' do
       create_user(
@@ -497,16 +515,17 @@ class UsersControllerTest < ActionController::TestCase
   end
   
   protected
-    def create_user(options = {})
-      post :create, :user =>
-        {
-          :name => 'S. Quire',
-          :email => 'quire@example.com',
-          :zip_code => '55402',
-          :password => 'quire',
-          :password_confirmation => 'quire',
-          :terms_of_service => '1'
-        }.merge(options)
+    def create_user(user_params = {}, other_params = {})
+      post :create, {
+          :user => {
+            :name => 'S. Quire',
+            :email => 'quire@example.com',
+            :zip_code => '55402',
+            :password => 'quire',
+            :password_confirmation => 'quire',
+            :terms_of_service => '1'
+          }.merge(user_params)
+        }.merge(other_params)
     end
     
     def current_user
