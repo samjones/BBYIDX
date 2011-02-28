@@ -19,14 +19,13 @@ gem 'oauth-plugin', '0.3.14'
 gem "calendar_date_select", '1.16.1'
 gem "rcov"
 gem "lazy", '0.9.6'
-
+gem 'fastercsv'
+gem 'highline'
 
 group :test do
  gem 'pg'
  gem 'shoulda'
  gem 'thoughtbot-shoulda'
  gem 'mocha'
- gem 'fastercsv'
- gem 'highline'
  gem 'nokogiri'
 end
