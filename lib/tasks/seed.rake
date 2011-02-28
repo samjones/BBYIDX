@@ -1,5 +1,5 @@
 require 'fastercsv'
-require 'highline/import'
+# require 'highline/import'
 require 'zlib'
 
 namespace :db do
@@ -27,33 +27,35 @@ namespace :db do
         ActiveRecord::Base.connection.execute(s<<pc.join(","))
       end
       
-      admin_role = Role.find(:all, :conditions => {:name => 'admin', :authorizable_type => nil}).first
-      admin_user = admin_role.users.first if admin_role
-      if admin_user
-        puts "Admin user already exists: #{admin_user.email}"
-      else
-        puts "Creating admin user..."
-        admin_email    = ask('Admin user email: ')
-        admin_password = ask('Admin user password: ') {|q| q.echo = '*' }
-        admin_user = User.create!(
-          :name => "Administrator",
-          :email => admin_email,
-          :zip_code => DEFAULT_ZIP_CODE,
-          :password => admin_password,
-          :password_confirmation => admin_password,
-          :terms_of_service => '1')
-        
-        puts "Granting admin privileges to #{admin_user.email}..."
-        admin_user.activate!
-        admin_user.has_role 'admin'
-        admin_user.has_role 'editor', User
-        admin_user.has_role 'editor', Idea
-        admin_user.has_role 'editor', Comment
-        admin_user.has_role 'editor', Current
-        admin_user.has_role 'editor', LifeCycle
-        admin_user.has_role 'editor', ClientApplication
-        admin_user.save!
-      end
+      # Uncomment to create admin user from cmd line
+      
+      # admin_role = Role.find(:all, :conditions => {:name => 'admin', :authorizable_type => nil}).first
+      # admin_user = admin_role.users.first if admin_role
+      # if admin_user
+      #   puts "Admin user already exists: #{admin_user.email}"
+      # else
+      #   puts "Creating admin user..."
+      #   admin_email    = ask('Admin user email: ')
+      #   admin_password = ask('Admin user password: ') {|q| q.echo = '*' }
+      #   admin_user = User.create!(
+      #     :name => "Administrator",
+      #     :email => admin_email,
+      #     :zip_code => DEFAULT_ZIP_CODE,
+      #     :password => admin_password,
+      #     :password_confirmation => admin_password,
+      #     :terms_of_service => '1')
+      #   
+      #   puts "Granting admin privileges to #{admin_user.email}..."
+      #   admin_user.activate!
+      #   admin_user.has_role 'admin'
+      #   admin_user.has_role 'editor', User
+      #   admin_user.has_role 'editor', Idea
+      #   admin_user.has_role 'editor', Comment
+      #   admin_user.has_role 'editor', Current
+      #   admin_user.has_role 'editor', LifeCycle
+      #   admin_user.has_role 'editor', ClientApplication
+      #   admin_user.save!
+      # end
       
       puts "Seed complete."
     end

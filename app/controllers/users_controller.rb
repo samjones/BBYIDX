@@ -11,17 +11,27 @@ class UsersController < ApplicationController
       @user.facebook_post_ideas = @user.linked_to_facebook?
       render :action => 'new_via_third_party'
     else
+      @first_user = (User.count == 0)
       render :action => 'new'
     end
   end
 
   def create
+    if params[:first_user]
+      if User.count > 0  # Critical line! Never set @first_user unless we've verified that this is really the first user.
+        flash[:info] = 'An admin user has already been created.'
+        redirect_to :action => new
+      end
+      @first_user = true
+    end
+    
     cookies.delete :auth_token
     new_user_from_params
     if @user.valid?
       @user.save!
       @user.register!
       @user.activate! if @user.linked_to_twitter? || @user.linked_to_facebook?
+      promote_to_superuser if @first_user
       self.current_user = @user
       flash[:info] = render_to_string(:partial => 'created')
       redirect_back_or_default('/')
@@ -173,6 +183,22 @@ protected
       end
     end
     logged_in?
+  end
+
+private
+  
+  def promote_to_superuser
+    raise "Not first user" if User.find(:all) != [@user]   # extra sanity check to prevent security hole
+    
+    @user.activate!
+    @user.has_role 'admin'
+    @user.has_role 'editor', User
+    @user.has_role 'editor', Idea
+    @user.has_role 'editor', Comment
+    @user.has_role 'editor', Current
+    @user.has_role 'editor', LifeCycle
+    @user.has_role 'editor', ClientApplication
+    @user.save!
   end
   
 end

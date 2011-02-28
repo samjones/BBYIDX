@@ -1,10 +1,22 @@
 class HomeController < ApplicationController
   
-  def index
-    # render the landing page
-  end
-
   def show
+    @@verified_installation ||= false
+    unless @@verified_installation
+      if PostalCode.count == 0
+        render :text =>
+          "<h1>Database not seeded</h1>
+           <p>To initialize the database, please run:</p>
+           <blockquote><tt>rake db:seed</tt></blockquote>"
+        return
+      end
+      if User.count == 0
+        redirect_to new_user_path
+        return
+      end
+      @@verified_installation = true
+    end
+    
     @body_class = params[:page].nil? ? 'home' : params[:page]
     render :action => params[:page] || 'show'
   end

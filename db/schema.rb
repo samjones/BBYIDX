@@ -235,7 +235,6 @@ ActiveRecord::Schema.define(:version => 20110209164341) do
     t.string   "facebook_uid"
     t.boolean  "notify_on_comments",                       :default => false,     :null => false
     t.boolean  "notify_on_state",                          :default => false,     :null => false
-    t.text     "vectors"
     t.string   "facebook_access_token"
     t.boolean  "facebook_post_ideas"
     t.string   "facebook_name"
@@ -244,7 +243,6 @@ ActiveRecord::Schema.define(:version => 20110209164341) do
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
   add_index "users", ["state"], :name => "index_users_on_state"
-  add_index "users", ["vectors"], :name => "users_fts_vectors_index"
 
   create_table "votes", :force => true do |t|
     t.integer  "idea_id"
