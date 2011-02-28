@@ -49,7 +49,7 @@ The following steps* will walk you through getting BBYIDX running on Heroku, our
 These steps must be executed from the project root directory.
 
 1. `heroku create YOUR-APP-NAME`
-2. `heroku addons:add [sendgrid](http://addons.heroku.com/sendgrid):free`
+2. `heroku addons:add sendgrid:free` (See the [Sendgrid](http://addons.heroku.com/sendgrid) docs for plans and pricing)
 3. `git push heroku master`
 4. `heroku rake db:migrate`
 5. `heroku restart`
