@@ -1,9 +1,5 @@
 class UserObserver < ActiveRecord::Observer
   
-  def after_create(user)
-   UserMailer.deliver_signup_notification(user) if user.activation_code
-  end
-  
   def before_save(user)
     if user.notify_on_comments_changed? && !user.notify_on_comments?
       # Alas, ActiveRecord association doesn't understand delete_if.
@@ -18,7 +14,7 @@ class UserObserver < ActiveRecord::Observer
       user.count_votes
       user.ideas.each    { |i| i.notify_subscribers! }
       user.comments.each { |c| c.notify_subscribers! }
-      UserMailer.deliver_activation(user)
+      user.clear_recently_activated
     end
     if user.active?
       UserMailer.deliver_password_change_notification(user)              if user.crypted_password_changed?

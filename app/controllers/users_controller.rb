@@ -36,6 +36,7 @@ class UsersController < ApplicationController
       self.current_user = @user
       flash[:info] = render_to_string(:partial => 'created')
       redirect_back_or_default('/')
+      deliver_account_state_notification @user
     else
       if @user.linked_to_twitter? || @user.linked_to_facebook?
         render :action => 'new_via_third_party'
@@ -181,9 +182,18 @@ protected
       self.current_user = User.find_by_activation_code(code)
       if logged_in? && !current_user.active?
         current_user.activate!
+        deliver_account_state_notification current_user
       end
     end
     logged_in?
+  end
+  
+  def deliver_account_state_notification(user)
+    if user.active?
+      UserMailer.deliver_activation(user)
+    elsif user.pending?
+      UserMailer.deliver_signup_notification(user) if user.activation_code
+    end
   end
 
 private
@@ -199,7 +209,6 @@ private
     @user.has_role 'editor', Current
     @user.has_role 'editor', LifeCycle
     @user.has_role 'editor', ClientApplication
-    @user.save!
   end
   
 end

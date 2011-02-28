@@ -163,9 +163,13 @@ class User < ActiveRecord::Base
 
   # Returns true if the user has just been activated.
   def recently_activated?
-    @activated
+    @recently_activated
   end
-  
+
+  def clear_recently_activated
+    @recently_activated = false
+  end
+    
   def reset_activation_code
     self.activation_code = Digest::SHA1.hexdigest( Time.now.to_s.split(//).sort_by {rand}.join )
   end
@@ -260,7 +264,7 @@ class User < ActiveRecord::Base
     end
 
     def do_activate
-      @activated = true
+      @recently_activated = true
       self.activated_at = Time.now.utc
       self.deleted_at = self.activation_code = nil
     end

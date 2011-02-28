@@ -114,8 +114,10 @@ class UsersControllerTest < ActionController::TestCase
     Role.destroy_all
 
     create_user({}, { :first_user => '1' })
-    assert logged_in?
-    assert current_user.admin?
+    assert_account_activated_immediately
+    [User, Idea, Comment, Current, LifeCycle, ClientApplication].each do |admin_class|
+      assert current_user.has_role?('editor', admin_class), "New user should be admin for #{admin_class}"
+    end
   end
   
   def test_should_not_make_first_user_admin_without_first_user_param
@@ -544,6 +546,7 @@ class UsersControllerTest < ActionController::TestCase
     end
     
     def assert_account_activated_immediately
+      assert logged_in?
       user = current_user
       assert user.active?
       assert !(flash[:info] =~ /#{user.email}/)
