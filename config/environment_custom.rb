@@ -45,10 +45,9 @@ GOOGLE_WEBMASTER_KEY = nil
 # This will enable spam filtering.
 RAKISMET_URL = "http://#{PRODUCTION_HOST}"
 
-SPAM_PURGE_AGE = 30 # days; set to nil to disable spam purging
+# Time after which an idea marked as spam will be permanently deleted. Set to nil to disable spam purging.
+SPAM_PURGE_AGE = 30 # days
 
-# This is used for two purposes:
-#  (1) The db:seed rake task uses this as the zip code for the initial admin user (which can be changed).
-#  (2) When displaying nearby ideas, if browser geolocation fails and the user is not logged in,
-#      and we thus have no idea where the user is located, the system displays ideas near this zip code.
+# When displaying nearby ideas, if browser geolocation fails and the user is not logged in, we have no idea
+# where the user is located. In that case, the system then displays ideas near this zip code.
 DEFAULT_ZIP_CODE = '55423'

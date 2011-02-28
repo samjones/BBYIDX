@@ -3,35 +3,43 @@
 BBYIDX is a free and open source idea-gathering application written in Ruby and distributed
 under the GNU Affero General Public License.
 
-## Local Installation
+## Requirements
 
-1. `bundle install`
-2. `rake db:migrate`
-3. `rake db:seed`
+### Rails
+
+BBYIDX runs on Rails 2.3. It does not (yet) run on Rails 3. Don't worry about installing the correct version of
+Rails and all the gems and plugins; bundler should take care of all that automatically.
 
 ### Database
 
-To set up the database, if you are using MySQL, you'll need to make sure the user configured in database.yml
+The app requires PostgreSQL 8.3 or newer.
+
+You'll probably encounter issues on other databases. At the very least, full text search won't work, since it uses
+the PostgreSQL-specific tsearch plugin. We welcome patches!
+
+One known hurdle: if you are using MySQL, you'll need to make sure the user configured in database.yml
 has permission to use the "load data" command:
 
     grant file on *.* to bbyidx;
 
-### Running the test suite
-
-To verify your installation:
-
-    rake test
-
 ## Configuration
 
-The following files will need to be modified in order to configure your
-installation:
+You will first need to edit the following files to get the app running in your environemnt:
 
 * config/environment_custom.rb
 * config/database.yml
 * config/newrelic.yml       (if you want performance metrics from NewRelic)
 * config/twitter.yml        (if you want Twitter integration)
 * config/facebooker.yml     (if you want Facebook integration)
+
+## Local Installation
+
+1. `bundle install`
+2. `rake db:migrate`
+3. `rake db:seed`
+4. `script/server`
+
+The first time you visit the app, it will prompt you to create an admin user.
 
 ## Customization
 
@@ -42,6 +50,14 @@ To customize the UI, edit / create files in the following directories:
 * public/images/
 
 **NOTE:** UI elements that pertain to your brand need not be contributed back to the open source project.
+
+### Running the test suite
+
+To verify the code you have checked out:
+
+    rake test
+    
+If you submit patches, please make sure that they don't break existing tests.
 
 ## Heroku Installation
 
