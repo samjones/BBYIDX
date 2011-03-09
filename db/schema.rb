@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110209164341) do
+ActiveRecord::Schema.define(:version => 20110309223551) do
 
   create_table "admin_comments", :force => true do |t|
     t.integer  "idea_id"
@@ -111,9 +111,11 @@ ActiveRecord::Schema.define(:version => 20110209164341) do
     t.string   "user_agent"
     t.boolean  "spam_checked",                                                     :default => false, :null => false
     t.boolean  "notifications_sent",                                               :default => false, :null => false
+    t.text     "vectors"
   end
 
   add_index "ideas", ["inventor_id"], :name => "index_ideas_on_inventor_id"
+  add_index "ideas", ["vectors"], :name => "ideas_fts_vectors_index"
 
   create_table "ideas_admin_tags", :id => false, :force => true do |t|
     t.integer "idea_id"
@@ -239,10 +241,12 @@ ActiveRecord::Schema.define(:version => 20110209164341) do
     t.boolean  "facebook_post_ideas"
     t.string   "facebook_name"
     t.float    "recent_contribution_points"
+    t.text     "vectors"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
   add_index "users", ["state"], :name => "index_users_on_state"
+  add_index "users", ["vectors"], :name => "users_fts_vectors_index"
 
   create_table "votes", :force => true do |t|
     t.integer  "idea_id"
