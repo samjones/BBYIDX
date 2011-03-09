@@ -114,6 +114,14 @@ class IdeaTest < ActiveSupport::TestCase
     assert_equal 0, @barbershop_discount.comment_count
   end
   
+  def test_ideas_assigned_to_default_current_if_current_is_nil
+    new_idea = @sally.ideas.new(:title => 'foo', :description => 'bar', :ip => '10.0.0.0', :user_agent => 'FrutsoBrowse')
+    new_idea.current = nil
+    new_idea.save!
+    new_idea.reload
+    assert_equal Current::DEFAULT_CURRENT_ID, new_idea.current_id
+  end
+  
   def test_closed
     my_idea = Idea.new(:title=>"My Idea", :description=>"Foo", :current=>@closed_current)
     my_idea.stubs(:current).returns(@closed_current)

@@ -190,6 +190,7 @@ class Idea < ActiveRecord::Base
   def before_save
     self.tags.uniq!
     update_vote_count
+    self.current_id = Current::DEFAULT_CURRENT_ID unless current_id
   end
   
   def after_save
