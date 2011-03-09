@@ -50,8 +50,8 @@ ActiveRecord::Schema.define(:version => 20110309223551) do
     t.string   "ip",                  :limit => 64
     t.string   "user_agent"
     t.boolean  "marked_spam",                       :default => false
-    t.boolean  "spam_checked",                      :default => false, :null => false
     t.boolean  "notifications_sent",                :default => false, :null => false
+    t.boolean  "spam_checked",                      :default => false, :null => false
   end
 
   add_index "comments", ["author_id"], :name => "index_comments_on_author_id"
