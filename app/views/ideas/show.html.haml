@@ -46,8 +46,7 @@
               = link_to "Comments #{"(#{@idea.comment_count})" if @idea.comment_count > 0}", "#comments"
               |
               = link_to "Post a Comment", "#post-comment"
-            #subscription
-              = render :partial => 'subscription'
+            %li.subscription#subscription= render :partial => 'subscription'
             %li.tags
               = @idea.tags.map { |tag| link_to h(tag.name), idea_search_path(:search => ['tag', tag.name]) }.join(', ')
             %li.sharethis= render :partial => 'sharethis'
