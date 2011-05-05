@@ -19,7 +19,7 @@ class CommentsController < ApplicationController
     
     response_for :create do |format|
       format.html do
-        flash[:info] = "Thanks! Your comment has been posted. <strong><a href='#post-comment'>View comment &raquo;</a></strong>"
+        flash[:info] = "Thanks! Your comment has been posted. <strong><a href='#comment_#{@comment.id}'>View comment &raquo;</a></strong>"
         redirect_to idea_url(@idea)
       end
       format.xml do
