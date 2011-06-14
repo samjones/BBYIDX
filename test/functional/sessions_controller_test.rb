@@ -33,7 +33,7 @@ class SessionsControllerTest < ActionController::TestCase
     assert_response :success
     assert_template 'inactive'
   end
-
+  
   def test_should_logout
     login_as @quentin
     get :destroy
@@ -44,13 +44,36 @@ class SessionsControllerTest < ActionController::TestCase
   def test_should_remember_me
     post :create, :email => 'quentin@example.com', :password => 'test', :remember_me => "1"
     assert_not_nil @response.cookies["auth_token"]
+    
+    session[:user_id] = nil
+    @request.cookies = @response.cookies
+    @controller = HomeController.new
+    get :show
+    assert_equal @quentin.id, session[:user_id]
   end
 
   def test_should_not_remember_me
     post :create, :email => 'quentin@example.com', :password => 'test', :remember_me => "0"
     assert_nil @response.cookies["auth_token"]
+    
+    session[:user_id] = nil
+    @request.cookies = @response.cookies
+    @controller = HomeController.new
+    get :show
+    assert_nil session[:user_id]
   end
   
+  def test_should_not_remember_me_on_post_requests
+    # Allowing the "remember me" coookie to work on a post request is a XSRF vulnerability.
+    post :create, :email => 'quentin@example.com', :password => 'test', :remember_me => "1"
+    
+    session[:user_id] = nil
+    @request.cookies = @response.cookies
+    @controller = HomeController.new
+    post :nearby_ideas, :search => {:postal_code => '55406'}
+    assert_nil session[:user_id]
+  end
+
   def test_should_delete_token_on_logout
     login_as @quentin
     get :destroy

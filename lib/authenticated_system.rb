@@ -165,10 +165,14 @@ module AuthenticatedSystem
 
     # Called from #current_user.  Finaly, attempt to login by an expiring token in the cookie.
     def login_from_cookie
-      user = cookies[:auth_token] && User.find_by_remember_token(cookies[:auth_token])
-      if user && user.remember_token?
-        cookies[:auth_token] = { :value => user.remember_token, :expires => user.remember_token_expires_at }
-        self.current_user = user
+      # NB: We must only use the auto-login token on GET requests; doing otherwise exposes us to XSRF vulnerabilities.
+      # http://weblog.rubyonrails.org/2011/2/8/csrf-protection-bypass-in-ruby-on-rails
+      if request.method == :get
+        user = cookies[:auth_token] && User.find_by_remember_token(cookies[:auth_token])
+        if user && user.remember_token?
+          cookies[:auth_token] = { :value => user.remember_token, :expires => user.remember_token_expires_at }
+          self.current_user = user
+        end
       end
     end
 end
