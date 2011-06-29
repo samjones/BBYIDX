@@ -89,7 +89,7 @@ class SessionsController < ApplicationController
     cookies.delete :auth_token
     reset_session
     flash[:info] = "You are now logged out. Thanks for using #{SHORT_SITE_NAME}!"
-    redirect_back_or_default('/')
+    redirect_back_or_default root_path
   end
   
 private
@@ -97,7 +97,7 @@ private
   def response_for_successful_login
     redirect_back_or_default do
       if current_user.active?
-        redirect_to '/'
+        redirect_to root_path
       else
         render :action => 'inactive'
       end
