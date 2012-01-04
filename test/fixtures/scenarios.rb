@@ -386,7 +386,7 @@ scenario :xss_attack do
     :title => attack('idea2.title'),
     :description => attack('idea2.description'),
     :inappropriate_flags => 1))
-    
+
   @comment = @idea.comments.create!(attack_client_info(
     :author => @user,
     :text => attack('comment.text'),

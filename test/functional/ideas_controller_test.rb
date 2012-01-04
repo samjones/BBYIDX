@@ -438,5 +438,15 @@ class IdeasControllerTest < ActionController::TestCase
     @walruses_in_stores.reload
     assert_equal_unordered [@quentin, @aaron], @barbershop_discount.subscribers
   end
-  
+
+  def test_no_voting_on_ideas_in_expired_currents
+    login_as @sally
+    @walrus_attack_current.closed = true
+    @walrus_attack_current.save
+    get :show, :id => @give_up_all_hope.id
+    assert_no_tag :tag => 'a', 
+                  :parent => { :tag => 'li', 
+                               :attributes => {:class => 'vote-for-it'} }
+  end
+ 
 end
