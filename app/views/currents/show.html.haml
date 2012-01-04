@@ -34,8 +34,9 @@
         - if @current_ideas.empty?
           %h3#add_idea
             There are no ideas in this current.
-            = link_to 'Submit an idea!', params[:action] == "show" ? "#add_idea" : current_path(current, :anchor=>"add_idea")
-            %a{:name=>"add_idea"}
+            - unless @current.closed_or_expired?
+              = link_to 'Submit an idea!', params[:action] == "show" ? "#add_idea" : current_path(current, :anchor=>"add_idea")
+              %a{:name=>"add_idea"}
         - else
           = will_paginate @current_ideas
           
@@ -47,10 +48,11 @@
           
           = will_paginate @current_ideas
       #current.group.slate
-        - unless @current_ideas.empty?
+        - unless @current_ideas.empty? || @current.closed_or_expired?
           %h3#add_idea
             Submit another idea to this current
-        =render :partial=>"ideas/new", :locals=>{:current=>@current}
+        - unless @current.closed_or_expired?
+          =render :partial=>"ideas/new", :locals=>{:current=>@current}
     .footer
   %hr.hide
   #sidebar.aside
