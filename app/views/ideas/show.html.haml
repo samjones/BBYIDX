@@ -44,8 +44,9 @@
           %ul.entry-meta
             %li.comments
               = link_to "Comments #{"(#{@idea.comment_count})" if @idea.comment_count > 0}", "#comments"
-              |
-              = link_to "Post a Comment", "#post-comment"
+              - unless @idea.closed?
+                |
+                = link_to "Post a Comment", "#post-comment"
             %li.subscription#subscription= render :partial => 'subscription'
             %li.tags
               = @idea.tags.map { |tag| link_to h(tag.name), idea_search_path(:search => ['tag', tag.name]) }.join(', ')
@@ -63,7 +64,7 @@
               - @idea.duplicates.visible.each do |idea|
                 %li= link_to h(idea.title), idea_path(idea)
       #comments.group.slate
-        - if @idea.comments.visible.empty?
+        - if @idea.comments.visible.empty? && !@idea.closed?
           %h3 No Comments Yet. Write One!
         - else
           %h3== #{@idea.comment_count} Comments
@@ -73,39 +74,40 @@
                       :collection => @idea.comments.visible,
                       :controller => 'comments',
                       :locals => { :show_avatar => true }
-        - form_for :comment, :url => idea_comments_url(@idea), :html => { :onsubmit => 'return validateComment()' } do |f|
-          #comment-missing.message.error{:style => 'display: none'}
-            Please enter a comment.
-          .form-group.inline#post-comment
-            %label{ :for => "comment-text" } Your Comment
-            = f.text_area :text, :id => "comment-text", :class => "input-textarea"
-          .form-submit.inline
-            - if current_user && !current_user.active?
-              %p.message.info Your comment will not be publicly visible until you confirm your account.
-            = submit_tag "Post Comment", :class => "input-submit"
-        :javascript
-          function validateComment() {
-            if($('comment-text').value.blank()) {
-              $('comment-missing').style.display = 'block';
-              $('comment-text').focus();
-              return false;
-            } else {
-              return true;
+        - unless @idea.closed?
+          - form_for :comment, :url => idea_comments_url(@idea), :html => { :onsubmit => 'return validateComment()' } do |f|
+            #comment-missing.message.error{:style => 'display: none'}
+              Please enter a comment.
+            .form-group.inline#post-comment
+              %label{ :for => "comment-text" } Your Comment
+              = f.text_area :text, :id => "comment-text", :class => "input-textarea"
+            .form-submit.inline
+              - if current_user && !current_user.active?
+                %p.message.info Your comment will not be publicly visible until you confirm your account.
+              = submit_tag "Post Comment", :class => "input-submit"
+          :javascript
+            function validateComment() {
+              if($('comment-text').value.blank()) {
+                $('comment-missing').style.display = 'block';
+                $('comment-text').focus();
+                return false;
+              } else {
+                return true;
+              };
             };
-          };
-          function editCommentText(id) {
-            $$('#comment_'+id+' .comment-content')[0].hide();
-            $$('#comment_'+id+' .edit-comment-content')[0].show();
-          };
-          function validateCommentUpdate(id) {
-            if($('comment-'+id+'-text').value.blank()) {
-              $('comment-'+id+'-missing').style.display = 'block';
-              $('comment-'+id+'-text').focus();
-              return false;
-            } else {
-              return true;
+            function editCommentText(id) {
+              $$('#comment_'+id+' .comment-content')[0].hide();
+              $$('#comment_'+id+' .edit-comment-content')[0].show();
             };
-          };
+            function validateCommentUpdate(id) {
+              if($('comment-'+id+'-text').value.blank()) {
+                $('comment-'+id+'-missing').style.display = 'block';
+                $('comment-'+id+'-text').focus();
+                return false;
+              } else {
+                return true;
+              };
+            };
     .footer
   %hr.hide
   - if @idea.editable_by?(current_user)
