@@ -15,7 +15,7 @@ module Admin
       before :edit do
         unless @idea.viewed
           @idea.viewed = true
-          @idea.save!
+          @idea.save
         end
         @life_cycle_handler = LifeCycleHandler.new(@idea)
       end
