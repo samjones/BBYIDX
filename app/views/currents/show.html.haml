@@ -26,7 +26,7 @@
         %div
           %h3 About This Current
           %ul.entry-meta   
-            %li.ideas= render :partial => 'idea_count', :locals => { :current_ideas => @current_ideas }
+            %li.ideas= render :partial => 'idea_count', :locals => { :current_ideas => @current_ideas, :current => @current }
             #subscription
               = render :partial => 'subscription'
             %li.sharethis= render :partial => 'ideas/sharethis'
@@ -40,7 +40,7 @@
         - else
           = will_paginate @current_ideas
           
-          %h3= render :partial => 'idea_count', :locals => { :current_ideas => @current_ideas }
+          %h3= render :partial => 'idea_count', :locals => { :current_ideas => @current_ideas, :current => @current }
           .ideas-list.inset.current-idea-list
             %div
               %div
