@@ -9,6 +9,6 @@ fastercsv
 oauth --version 0.4.3
 oauth-plugin --version 0.3.14
 httparty --version 0.6.1
-twitter --version 0.9.12
+twitter --version 4.3.0
 facebooker
 will_paginate --version 2.3.15
