@@ -1,4 +1,3 @@
-
 source "http://rubygems.org"
 
 gem "rails", "~> 2.3.11"
@@ -6,7 +5,7 @@ gem "json"
 gem "haml", '3.0.22'
 gem 'will_paginate', '~> 2.3.11'
 gem "color", '1.4.1'
-gem 'twitter', '0.9.12'
+gem 'twitter', '4.3.0'
 gem 'mash'
 gem 'httparty'
 gem 'ruby-hmac'
